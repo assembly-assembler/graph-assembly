@@ -1,0 +1,26 @@
+{
+  "name": "k-vote-graph",
+  "private": true,
+  "type": "module",
+  "description": "국회 의정활동 위키 — 22대 의석·의원·발의·표결 (GovTrack/TheyWorkForYou 한국판)",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "snapshot": "tsx ingest/scripts/snapshot.ts",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "astro": "^5.6.0",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.36.0",
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "drizzle-kit": "^0.28.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

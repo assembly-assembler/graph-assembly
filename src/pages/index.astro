@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro'
+import { members, partyCounts } from '../lib/data'
+
+const base = import.meta.env.BASE_URL
+const parties = partyCounts()
+---
+
+<Base title="국회 의정활동 위키 — 제22대">
+  <h1>제22대 국회의원 <span class="count">{members.length}명</span></h1>
+
+  <div class="parties">
+    {parties.map((p) => <span class="chip">{p.party} {p.count}</span>)}
+  </div>
+
+  <input id="q" type="search" placeholder="이름·정당·지역구 검색…" autocomplete="off" />
+
+  <ul id="grid" class="grid">
+    {members.map((m) => (
+      <li class="card" data-text={`${m.name} ${m.party} ${m.district}`}>
+        <a href={`${base}members/${m.monaCd}`}>
+          <img loading="lazy" src={m.photo} alt={m.name} width="48" height="60" />
+          <div>
+            <strong>{m.name}</strong>
+            <small>{m.party}</small>
+            <small>{m.district}</small>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <script is:inline>
+    const q = document.getElementById('q')
+    const cards = Array.from(document.querySelectorAll('#grid .card'))
+    q.addEventListener('input', () => {
+      const v = q.value.trim().toLowerCase()
+      for (const c of cards) {
+        c.style.display = c.dataset.text.toLowerCase().includes(v) ? '' : 'none'
+      }
+    })
+  </script>
+</Base>

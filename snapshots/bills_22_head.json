@@ -1,0 +1,30 @@
+{
+  "code": "INFO-000",
+  "total": 17333,
+  "sampleRow": {
+    "BILL_ID": "PRC_S2S6Q0P5W2W2E1D9A5J9I2F7B4A6J3",
+    "BILL_NO": "2219111",
+    "BILL_NAME": "한국장학재단 설립 등에 관한 법률 일부개정법률안",
+    "COMMITTEE": null,
+    "PROPOSE_DT": "2026-06-05",
+    "PROC_RESULT": null,
+    "AGE": "22",
+    "DETAIL_LINK": "http://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_S2S6Q0P5W2W2E1D9A5J9I2F7B4A6J3&ageFrom=22&ageTo=22",
+    "PROPOSER": "김문수의원 등 10인",
+    "MEMBER_LIST": "http://likms.assembly.go.kr/bill/coactorListPopup.do?billId=PRC_S2S6Q0P5W2W2E1D9A5J9I2F7B4A6J3",
+    "LAW_PROC_DT": null,
+    "LAW_PROC_RESULT_CD": null,
+    "RST_MONA_CD": "86R9476S",
+    "LAW_PRESENT_DT": null,
+    "LAW_SUBMIT_DT": null,
+    "CMT_PROC_RESULT_CD": null,
+    "CMT_PROC_DT": null,
+    "CMT_PRESENT_DT": null,
+    "COMMITTEE_DT": null,
+    "PROC_DT": null,
+    "COMMITTEE_ID": null,
+    "PUBL_MONA_CD": "7BM2933Y,6VC83722,CK143054,95J3282H,BCQ55105,3CC88975,HSS7466Y,X639721U,0R68099X",
+    "RST_PROPOSER": "김문수",
+    "PUBL_PROPOSER": "김영호,김현정,양부남,이광희,한준호,김기표,백혜련,임미애,이수진"
+  }
+}

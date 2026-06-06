@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro'
+import { members, memberByMona } from '../../lib/data'
+
+export function getStaticPaths() {
+  return members.map((m) => ({ params: { id: m.monaCd } }))
+}
+
+const base = import.meta.env.BASE_URL
+const m = memberByMona(Astro.params.id!)!
+---
+
+<Base title={`${m.name} 의원 — 국회 의정활동 위키`}>
+  <a class="back" href={base}>← 전체 의원</a>
+
+  <article class="profile">
+    <img src={m.photo} alt={m.name} width="120" height="150" />
+    <div>
+      <h1>{m.name} {m.hanja && <small>{m.hanja}</small>}</h1>
+      <p class="meta">
+        {m.party} · {m.district}{m.electType && ` · ${m.electType}`}{m.reele && ` · ${m.reele}`}
+      </p>
+      {m.leadCommittee && <p><b>대표 위원회</b> · {m.leadCommittee}</p>}
+      {m.committees && <p><b>소속 위원회</b> · {m.committees}</p>}
+      {m.position && <p><b>직책</b> · {m.position}</p>}
+      <p class="contact">
+        {m.tel && <span>☎ {m.tel}</span>}
+        {m.email && <a href={`mailto:${m.email}`}>✉ {m.email}</a>}
+        {m.homepage && <a href={m.homepage} target="_blank" rel="noopener">홈페이지 ↗</a>}
+      </p>
+      <p class="source">출처: 열린국회정보 의원 인적사항 (<code>nwvrqwxyaytdsfvhu</code>) · MONA_CD <code>{m.monaCd}</code></p>
+    </div>
+  </article>
+
+  <section class="todo">
+    <h2>발의 법안 · 표결 기록</h2>
+    <p>다음 단계 적재 예정 — 발의 17,333건(대표/공동, MONA_CD 결정론 조인) + 본회의 표결(찬성/반대/기권/불참).</p>
+  </section>
+</Base>
