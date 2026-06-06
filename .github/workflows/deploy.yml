@@ -19,6 +19,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ASSEMBLY_API_KEY: ${{ secrets.ASSEMBLY_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,10 +32,8 @@ jobs:
       # 시크릿 ASSEMBLY_API_KEY 가 있으면 최신 데이터로 재적재(curl 우회는 러너에서 동작).
       # 없으면 repo에 커밋된 snapshots/ 로 빌드.
       - name: Refresh snapshots
-        if: ${{ secrets.ASSEMBLY_API_KEY != '' }}
+        if: ${{ env.ASSEMBLY_API_KEY != '' }}
         continue-on-error: true
-        env:
-          ASSEMBLY_API_KEY: ${{ secrets.ASSEMBLY_API_KEY }}
         run: npm run snapshot
 
       - name: Build (Astro, static)
