@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { members, memberByMona } from '../../lib/data'
+import { members, memberByMona, billsByMona, voteSummaryByMona } from '../../lib/data'
 
 export function getStaticPaths() {
   return members.map((m) => ({ params: { id: m.monaCd } }))
@@ -8,32 +8,50 @@ export function getStaticPaths() {
 
 const base = import.meta.env.BASE_URL
 const m = memberByMona(Astro.params.id!)!
+const myBills = billsByMona(m.monaCd)
+const v = voteSummaryByMona(m.monaCd)
+
+const resultClass = (r: string) =>
+  r.includes('가결') || r.includes('반영') ? 'ok'
+  : r.includes('폐기') || r.includes('철회') || r.includes('부결') ? 'no'
+  : 'pend'
 ---
 
-<Base title={`${m.name} 의원 — 국회 의정활동 위키`}>
-  <a class="back" href={base}>← 전체 의원</a>
+<Base title={`${m.name} 의원 — 국회 의정활동`}>
+  <a class="back" href={base}>← 의정활동 피드</a>
 
   <article class="profile">
     <img src={m.photo} alt={m.name} width="120" height="150" />
     <div>
-      <h1>{m.name} {m.hanja && <small>{m.hanja}</small>}</h1>
-      <p class="meta">
-        {m.party} · {m.district}{m.electType && ` · ${m.electType}`}{m.reele && ` · ${m.reele}`}
-      </p>
+      <h1>{m.name}</h1>
+      <p class="meta">{m.party} · {m.district}{m.electType && ` · ${m.electType}`}{m.reele && ` · ${m.reele}`}</p>
       {m.leadCommittee && <p><b>대표 위원회</b> · {m.leadCommittee}</p>}
       {m.committees && <p><b>소속 위원회</b> · {m.committees}</p>}
-      {m.position && <p><b>직책</b> · {m.position}</p>}
-      <p class="contact">
-        {m.tel && <span>☎ {m.tel}</span>}
-        {m.email && <a href={`mailto:${m.email}`}>✉ {m.email}</a>}
-        {m.homepage && <a href={m.homepage} target="_blank" rel="noopener">홈페이지 ↗</a>}
-      </p>
-      <p class="source">출처: 열린국회정보 의원 인적사항 (<code>nwvrqwxyaytdsfvhu</code>) · MONA_CD <code>{m.monaCd}</code></p>
+      <p class="source">출처: 열린국회정보 · MONA_CD <code>{m.monaCd}</code></p>
     </div>
   </article>
 
-  <section class="todo">
-    <h2>발의 법안 · 표결 기록</h2>
-    <p>다음 단계 적재 예정 — 발의 17,333건(대표/공동, MONA_CD 결정론 조인) + 본회의 표결(찬성/반대/기권/불참).</p>
+  <section>
+    <h2>본회의 표결 <span class="count">{v.total}건</span></h2>
+    <p class="votebar">
+      <span class="vk ok">찬성 {v.찬성}</span>
+      <span class="vk no">반대 {v.반대}</span>
+      <span class="vk">기권 {v.기권}</span>
+      <span class="vk">불참 {v.불참}</span>
+    </p>
+  </section>
+
+  <section>
+    <h2>대표발의 <span class="count">{myBills.length}건</span></h2>
+    <ul class="billlist">
+      {myBills.slice(0, 100).map((b) => (
+        <li>
+          <span class={`tag ${resultClass(b.result)}`}>{b.result}</span>
+          {b.link ? <a href={b.link} target="_blank" rel="noopener">{b.name}</a> : <span>{b.name}</span>}
+          <small>{b.date}</small>
+        </li>
+      ))}
+    </ul>
+    {myBills.length > 100 && <p class="hint">최근 100건만 표시 (총 {myBills.length}건)</p>}
   </section>
 </Base>

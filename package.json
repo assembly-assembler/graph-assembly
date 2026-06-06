@@ -8,6 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "snapshot": "tsx ingest/scripts/snapshot.ts",
+    "ingest:bills": "tsx ingest/scripts/ingest-bills.ts",
+    "ingest:votes": "tsx ingest/scripts/ingest-votes.ts",
+    "ingest": "npm run ingest:bills && npm run ingest:votes",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate"
   },

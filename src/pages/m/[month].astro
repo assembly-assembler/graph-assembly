@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro'
+import ActivityCard from '../../components/ActivityCard.astro'
+import { feed, monthView } from '../../lib/data'
+
+export function getStaticPaths() {
+  return feed.map((g) => ({ params: { month: g.month } }))
+}
+
+const base = import.meta.env.BASE_URL
+const mv = monthView(Astro.params.month!)!
+---
+
+<Base title={`${mv.group.label} — 국회의 활동을 한 눈에`}>
+  <div class="monthnav">
+    {mv.older ? <a class="arr" href={`${base}m/${mv.older.month}`}>‹</a> : <span class="arr off">‹</span>}
+    <span class="mlabel">{mv.group.label}</span>
+    {mv.newer ? <a class="arr" href={`${base}m/${mv.newer.month}`}>›</a> : <span class="arr off">›</span>}
+  </div>
+
+  <div class="cards-grid">
+    {mv.group.cards.map((card) => <ActivityCard card={card} />)}
+  </div>
+</Base>
