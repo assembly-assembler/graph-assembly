@@ -44,8 +44,13 @@ export type AssemblyResult = {
   raw: string
 }
 
-async function curlGet(url: string): Promise<string> {
-  const { stdout } = await execFileP('curl', ['-s', '-A', UA, '--max-time', '60', url], {
+/**
+ * curl(브라우저 UA)로 GET 본문을 그대로 받는다. open.assembly OpenAPI뿐 아니라
+ * likms.assembly.go.kr(의안정보시스템) 같은 WAF 호스트도 동일하게 UA 없이는 차단되므로
+ * 그쪽 적재(제안이유·주요내용 팝업)에서도 이 헬퍼를 재사용한다. -L로 리다이렉트 추적.
+ */
+export async function curlGet(url: string): Promise<string> {
+  const { stdout } = await execFileP('curl', ['-sL', '-A', UA, '--max-time', '60', url], {
     maxBuffer: 128 * 1024 * 1024,
   })
   return stdout

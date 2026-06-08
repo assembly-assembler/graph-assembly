@@ -5,3 +5,6 @@ dist/
 .env
 .env.local
 .DS_Store
+
+# 로컬 런타임 락(scheduled-tasks)
+.claude/scheduled_tasks.lock

@@ -1,10 +1,12 @@
 ---
 import type { Card } from '../lib/data'
+import { outcomeByMona } from '../lib/data'
 const base = import.meta.env.BASE_URL
 const { card } = Astro.props as { card: Card }
 const bills = card.bills
 const v = card.votes
 const pages = bills.length + 1
+const oc = outcomeByMona(card.monaCd)
 
 const resultClass = (r: string) =>
   r.includes('가결') || r.includes('반영') ? 'ok'
@@ -28,7 +30,10 @@ const resultClass = (r: string) =>
           <strong class="wname">{card.member?.name ?? '미상'}</strong>
           <span class="wmeta">{card.member?.party}{card.member?.district ? ` · ${card.member.district}` : ''}</span>
         </div>
-        <div class="num"><span class="big">{bills.length}</span><span class="unit">건</span></div>
+        <div class="num">
+          <div class="numline"><span class="big">{bills.length}</span><span class="unit">건</span></div>
+          <span class="total">22대 누적 {oc.total} · <b>법률반영 {oc.성과}</b></span>
+        </div>
       </div>
       {v.total > 0 && (
         <span class="vsum">이 달 표결 {v.total} · 찬 {v.찬성} 반 {v.반대} 기 {v.기권} 불참 {v.불참}</span>
@@ -37,7 +42,26 @@ const resultClass = (r: string) =>
     {bills.map((b) => (
       <div class="page bill" hidden>
         <h3 class="btitle">{b.name}</h3>
-        <p class="bdesc"><span class="todo">제안이유·주요내용 — 수집 예정 (원래 → 바뀜 / 이유)</span></p>
+        {b.gist ? (
+          <div class="ba">
+            <div class="ba-row">
+              <span class="ba-label">개선 전</span>
+              <p>{b.gist.before}</p>
+            </div>
+            <div class="ba-row after">
+              <span class="ba-label">개선 후</span>
+              <p>{b.gist.after}</p>
+            </div>
+          </div>
+        ) : (
+          <p class="bdesc"><span class="todo">제안이유·주요내용 요약 준비 중</span></p>
+        )}
+        {b.summaryRaw && (
+          <>
+            <button type="button" class="src-open" data-title={b.name}>원문 보기</button>
+            <div class="src-body" hidden>{b.summaryRaw}</div>
+          </>
+        )}
         <p class="bfacts">소관 {b.committee || '미정'} · 공동발의 {b.coCount}인 · <span class={`tag ${resultClass(b.result)}`}>{b.result}</span></p>
       </div>
     ))}

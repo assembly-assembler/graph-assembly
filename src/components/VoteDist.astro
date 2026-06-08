@@ -1,0 +1,38 @@
+---
+// 메인 "표결 성향" 분포 띠 — 전체 의원의 참여율·당론이탈률 히스토그램
+// 단일 종합점수 없음. 출처: 열린국회정보 표결기록(빌드타임 집계).
+import { participationDist, defectionDist } from '../lib/data'
+const fmt = (x: number) => (x * 100).toFixed(1).replace(/\.0$/, '') + '%'
+const strips = [
+  { d: participationDist, title: '표결 참여율', lo: '낮음', hi: '높음' },
+  { d: defectionDist, title: '당론 이탈', lo: '적음', hi: '많음' },
+].filter((s) => s.d)
+const span = (d: { min: number; max: number }) => (d.max - d.min) || 1
+---
+
+{strips.length > 0 && (
+  <section class="votedist">
+    <h2>표결 성향 <span class="vd-term">제22대 본회의</span></h2>
+    <div class="vd-grid">
+      {strips.map(({ d, title, lo, hi }) => (
+        <div class="vstrip">
+          <div class="vstrip-head">
+            <span class="vstrip-title">{title}</span>
+            <span class="vstrip-med">중앙값 {fmt(d!.median)} · {d!.count}명</span>
+          </div>
+          <div class="vstrip-bars">
+            {d!.bins.map((b) => (
+              <i style={`height:${b === 0 ? 0 : Math.max((b / d!.maxBin) * 100, 7)}%`}></i>
+            ))}
+            <span class="vstrip-medmark" style={`left:${((d!.median - d!.min) / span(d!)) * 100}%`}></span>
+          </div>
+          <div class="vstrip-ends"><span>{`${lo} ${fmt(d!.min)}`}</span><span>{`${hi} ${fmt(d!.max)}`}</span></div>
+        </div>
+      ))}
+    </div>
+    <p class="vd-note">
+      참여율 = (찬+반+기권) / 전체 표결 · 당론 이탈 = 같은 당 다수와 다르게 던진 비율(당론선 5명↑ 성립 시).
+      표본 적은 의원·군소·무소속은 제외 · 출처: 열린국회정보 표결기록. 의원별 상세는 각 의원 페이지에서.
+    </p>
+  </section>
+)}

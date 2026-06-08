@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { members, memberByMona, billsByMona, voteSummaryByMona } from '../../lib/data'
+import { members, memberByMona, billsByMona, voteSummaryByMona, outcomeByMona, voteProfile, peerStat } from '../../lib/data'
 
 export function getStaticPaths() {
   return members.map((m) => ({ params: { id: m.monaCd } }))
@@ -10,6 +10,11 @@ const base = import.meta.env.BASE_URL
 const m = memberByMona(Astro.params.id!)!
 const myBills = billsByMona(m.monaCd)
 const v = voteSummaryByMona(m.monaCd)
+const oc = outcomeByMona(m.monaCd)
+const vp = voteProfile(m.monaCd)
+const ps = peerStat(m)
+const pct = (x: number) => (x * 100).toFixed(1).replace(/\.0$/, '') + '%'
+const w = (n: number) => (oc.total ? `${(n / oc.total) * 100}%` : '0%')
 
 const resultClass = (r: string) =>
   r.includes('가결') || r.includes('반영') ? 'ok'
@@ -39,10 +44,44 @@ const resultClass = (r: string) =>
       <span class="vk">기권 {v.기권}</span>
       <span class="vk">불참 {v.불참}</span>
     </p>
+
+    <div class="vprofile">
+      <div class="vp-row">
+        <span class="vp-k">표결 참여율</span>
+        <span class="vp-v">{vp.participation != null ? pct(vp.participation) : '—'}</span>
+        {ps.partMed != null && <span class="vp-peer">동료 {ps.key} 중앙값 {pct(ps.partMed)}</span>}
+      </div>
+      <div class="vp-row">
+        <span class="vp-k">당론 이탈</span>
+        {vp.defection != null ? (
+          <>
+            <span class="vp-v">{pct(vp.defection)}</span>
+            <span class="vp-sub">{vp.def}/{vp.qual}표</span>
+            {ps.defMed != null && <span class="vp-peer">동료 중앙값 {pct(ps.defMed)}</span>}
+          </>
+        ) : (
+          <span class="vp-v na">군소·무소속 — 당론선 미산정</span>
+        )}
+      </div>
+    </div>
+    <p class="vp-note">참여율 = (찬+반+기권)/전체 표결 · 당론 이탈 = 같은 당 다수와 다르게 던진 비율(당론선 5명↑ 성립 시) · 동료그룹 = 같은 당·{ps.term}</p>
   </section>
 
   <section>
-    <h2>대표발의 <span class="count">{myBills.length}건</span></h2>
+    <h2>대표발의 <span class="count">{oc.total}건</span></h2>
+    <p class="outcome">
+      <span class="oc ok">법률반영 {oc.성과}</span>
+      <span class="oc pend">진행 {oc.진행}</span>
+      <span class="oc no">무산 {oc.무산}</span>
+    </p>
+    {oc.total > 0 && (
+      <div class="ocbar" role="img" aria-label={`법률반영 ${oc.성과}, 진행 ${oc.진행}, 무산 ${oc.무산}`}>
+        {oc.성과 > 0 && <span class="ok" style={`width:${w(oc.성과)}`}></span>}
+        {oc.진행 > 0 && <span class="pend" style={`width:${w(oc.진행)}`}></span>}
+        {oc.무산 > 0 && <span class="no" style={`width:${w(oc.무산)}`}></span>}
+      </div>
+    )}
+    <p class="oc-note">법률반영 = 원안·수정가결 + 대안/수정안 반영폐기(내용이 법률에 반영). 출처: 열린국회정보 처리결과</p>
     <ul class="billlist">
       {myBills.slice(0, 100).map((b) => (
         <li>
