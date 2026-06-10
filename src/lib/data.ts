@@ -191,7 +191,10 @@ export function outcomeByMona(mona: string): OutcomeAgg {
  * 당론 이탈률 = 같은 당 다수 입장(찬/반)과 다르게 던진 비율.
  *   - 정당(현직 POLY_NM 기준)이 그 의안에서 찬/반 ≥ MIN_BLOC 명일 때만 당론선 성립(소수·무소속 자동 제외).
  *   - 기권·불참은 입장이 아니므로 분모/분자에서 제외(찬·반만 계산).
- *   - 표본(qual)이 MIN_SAMPLE 미만이면 비율 숨김. */
+ *   - 표본(qual)이 MIN_SAMPLE 미만이면 비율 숨김.
+ *   - ⚠ 한계(철새): 현직 정당(POLY_NM) 기준으로 *모든 과거 표결*을 판정한다. 22대 중 당적을 바꾼 의원은
+ *     옛 표결이 새 당 당론선으로 평가돼 이탈률이 부정확. compact vote_records({b,m,v,d})가 표결 시점 정당을
+ *     안 담아서임. 정확화하려면 표결 적재 때 시점 POLY_NM을 함께 저장해야 함(별도 작업). */
 const POSITION = new Set(['찬성', '반대'])
 const MIN_BLOC = 5     // 당론선 성립에 필요한 그 당의 찬/반 최소 표수
 const MIN_SAMPLE = 30  // 비율 노출 최소 표본

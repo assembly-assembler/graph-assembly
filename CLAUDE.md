@@ -66,6 +66,7 @@ npm run snapshot   # 의원300 + 발의 head + 표결 표본
 4. **GH Actions `if`에 secrets 못 씀** → job-level `env`로 매핑 후 `env.X` 체크(deploy.yml 참고).
 5. **gh 인증**: 푸시는 `assembly-assembler` 계정 토큰 필요. fine-grained PAT면 Contents+Workflows write 권한 + repo 포함. git이 macOS keychain 낡은 토큰 쓰면 `git config credential.helper`를 gh로 고정.
 6. **큰 데이터 커밋**: bills 18MB + votes 44MB + summaries 26MB가 repo에 커밋(빌드 입력). 무거워지는 중 → 빈건 제외·압축·파생 단계 검토 시점.
+7. **당론이탈 = 현직 정당 기준(철새 한계)**: 당론이탈률은 `members_22`의 현직 `POLY_NM`으로 *모든 과거 표결*을 판정 → 22대 중 당적 변경 의원은 부정확. compact `vote_records`가 표결 시점 정당 미포함이라 그럼. 정확화하려면 표결 적재 시 시점 `POLY_NM` 저장(별도 작업). `lib/data.ts` 당론이탈 섹션 주석 참고.
 
 ## 설계 원칙
 - **런타임 LLM 0**: 화면 사실은 JSON/DB 조회만. 환각 0. LLM은 **빌드타임 부트스트랩**에만 허용.
