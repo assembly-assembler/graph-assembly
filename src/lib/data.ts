@@ -136,6 +136,17 @@ export function billsByMona(mona: string) {
   return bills.filter((b) => b.rstMona === mona).sort((a, b) => b.date.localeCompare(a.date))
 }
 
+/* ===== 제안이유·주요내용이 의안정보시스템에 미등록된 발의 =====
+ * likms billSummary의 smry 객체가 null → 서버가 "찾을 수 없습니다" 렌더 = 제목만 있고 본문 없음.
+ * 원천에 본문이 없어 카드 요약(gist)을 만들 수 없음(추측 금지로 빈칸 유지). 대부분 처리 전(계류) 발의.
+ * 투명성 차원에서 따로 모아 노출. 국회가 원문을 등록하면(증분 적재 시) 목록에서 자동으로 빠짐.
+ * 출처: 열린국회정보(발의 메타) + 의안정보시스템(원문 유무). */
+export type UnregBill = Bill & { member?: Member }
+export const unregisteredBills: UnregBill[] = bills
+  .filter((b) => !b.summaryRaw)
+  .map((b) => ({ ...b, member: byMona.get(b.rstMona) }))
+  .sort((a, b) => b.date.localeCompare(a.date))
+
 /** 해당 월에 대표발의 0건인 현직 의원(이름순) */
 export function inactiveMembers(month: string): Member[] {
   const g = feed.find((x) => x.month === month)

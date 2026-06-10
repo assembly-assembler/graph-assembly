@@ -53,8 +53,10 @@ const resultClass = (r: string) =>
               <p>{b.gist.after}</p>
             </div>
           </div>
-        ) : (
+        ) : b.summaryRaw ? (
           <p class="bdesc"><span class="todo">제안이유·주요내용 요약 준비 중</span></p>
+        ) : (
+          <p class="bdesc"><span class="todo">제안이유·주요내용 미등록</span><small class="unreg-sub">의안정보시스템에 원문이 없음</small></p>
         )}
         {b.summaryRaw && (
           <>
