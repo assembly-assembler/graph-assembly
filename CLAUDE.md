@@ -72,14 +72,11 @@ npm run snapshot   # 의원300 + 발의 head + 표결 표본
 - **출처 필수**: 모든 사실은 열린국회정보 근거. **추측 금지**(없는 내용 지어내지 말 것).
 - **디자인**: 순백 캔버스, `#171717` 잉크, Inter(+JetBrains Mono), 헤어라인, editorial(Expo 톤). 카드 = **각진(radius 0) 진한 테두리**. UI 텍스트는 **한국어**. 헤더 = "국회의 활동을 한 눈에"(영어 워드마크 금지).
 
-## 다음 작업
-- [x] **카드 설명 데이터원 확보**: likms `billSummary.do`로 제안이유·주요내용 원문 전량 적재(`ingest:summaries`). 카드 = 원문 모달 + gist. (PDF/LLM-추출 불필요했음)
-- [x] **gist 전량 채우기**: `/bill-gist`(Haiku 서브에이전트 병렬, Workflow)로 17,292건 **개선 전→후** 요약 완성. `bill_summaries_llm_22.json`(4.7MB)에 `{billId:{before,after}}` 객체(한 줄 아님). 신규 법안만 자동 증분.
-- [ ] CI(`deploy.yml`)에 `ingest:summaries` + `/bill-gist` 증분 단계 추가(신규 법안 원문·gist 자동 반영).
-- [ ] **gist 품질 점검**: 17,292건 중 대부분 Haiku 생성 → 표본 검수(특히 정치·민감 법안 중립성). 이상치만 `/bill-gist`로 재생성.
-- [ ] 메인 카드 그리드 **아래에 추가 섹션**(월별 아닌 다른 뷰 — 사용자가 추가 예정).
-- [ ] (선택) Node20 액션 버전업, 데이터 파일 경량화, 정당 의석/통계 시각화, 검색.
-- [ ] (장기) Postgres 적재 경로 — 현재는 snapshots JSON 직접 사용, `db/schema.ts`는 미사용.
+## 다음 작업 → `BACKLOG.md` (지속 개발 루프)
+- 작업 백로그의 단일 출처 = **`BACKLOG.md`**(P1~P3 우선순위, 상태 `ready`/`needs-user`/`done`, 완료 기준 포함). 이 섹션엔 더 안 적는다.
+- **`/dev-loop`** = 백로그에서 ready 작업 1개 처리: 구현 → `npm run build` 검증 → **로컬 커밋** → 백로그 갱신. **푸시는 사용자가**(push = Pages 배포 트리거).
+- 자율 반복: **`/loop /dev-loop`**(자기 페이싱) 또는 `/loop 30m /dev-loop`(간격 지정). ready 소진·반복 실패 시 스스로 종료.
+- UI/디자인 작업은 `needs-user` — 루프는 목업·조사까지만(시안 합의 원칙). 사이클 규칙·가드레일 = `.claude/skills/dev-loop/SKILL.md`.
 
 ## 사용자 협업 메모
 - 디자인 까다롭고 빠르게 반복. **시안은 목업(스샷/ASCII)으로 먼저 합의**, 보여줄 땐 `preview`(깜빡임 없음).
